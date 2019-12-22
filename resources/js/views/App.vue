@@ -1,13 +1,8 @@
 <template>
     <div>
-        <h1>Vue Router Demo App</h1>
-
-        <p>
-            <router-link :to="{ name: 'home' }">Home</router-link> |
-            <router-link :to="{ name: 'hello' }">Hello World</router-link> |
-            <router-link :to="{ name: 'users.index' }">Users</router-link> |
-            <router-link :to="{ name: 'users.create' }">Add User</router-link>
-        </p>
+       <div class="container my-4">
+         <h1><router-link :to="{ name: 'blog' }"><i class="fas fa-book-reader mx-4"></i></router-link>Simple Laravel & Vue Blog</h1>
+       </div>
 
         <div class="container">
             <router-view></router-view>

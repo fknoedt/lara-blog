@@ -57,7 +57,7 @@ class InitialData extends Seeder
             'title'             => 'This is a Test Post',
             'description'       => 'This is a Post to allow Feature Testing a Post retrieval',
             'long_description'  => $faker->text(1000),
-            'image_url'         => $faker->imageUrl(),
+            'image_url'         => 'https://picsum.photos/640/480', // $faker->imageUrl(): lorempixel.com is failing too often
             'user_id'           => BaseTestCase::DEFAULT_USER_ID,
             'category_id'       => BaseTestCase::DEFAULT_CATEGORY_ID
         ]);

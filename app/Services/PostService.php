@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\DB;
 class PostService
 {
     /**
+     * used to set created/updated_at
+     */
+    const DATE_INPUT_FORMAT = 'Y-m-d H:i:s';
+
+    /**
      * @param $id
      * @return Post
      */
@@ -19,9 +24,9 @@ class PostService
     /**
      * @return array
      */
-    public function list(): array
+    public function list()
     {
-        return Post::all();
+        return Post::with('user')->get();
     }
 
     /**
@@ -31,6 +36,8 @@ class PostService
      */
     public function create(array $data): Post
     {
+        // ensure the column will be set
+        $data['created_at'] = date(self::DATE_INPUT_FORMAT);
         // Create the new post model
         return Post::create($data);
     }
@@ -52,7 +59,8 @@ class PostService
                     'description'       => $data['description'],
                     'long_description'  => $data['long_description'],
                     'image_url'         => $data['image_url'],
-                    'category_id'       => $data['category_id']
+                    'category_id'       => $data['category_id'],
+                    'updated_at'        => date(self::DATE_INPUT_FORMAT)
                 ]
             );
     }

@@ -15,5 +15,6 @@
     </div>
 
     <script src="{{ mix('js/app.js') }}"></script>
+    <script src="https://kit.fontawesome.com/2a90c6e9b0.js" crossorigin="anonymous"></script>
     </body>
 </html>

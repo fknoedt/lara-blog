@@ -19,7 +19,7 @@ class CategoryService
     /**
      * @return array
      */
-    public function list(): array
+    public function list()
     {
         return Category::all();
     }

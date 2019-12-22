@@ -24,21 +24,30 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
     // Categories CRUD routes
     Route::resource('categories', 'CategoryController')
         ->only([
-            'index', 'show', 'store', 'update', 'destroy'
+            'store', 'update', 'destroy'
         ]);
 
     // Posts CRUD routes
     Route::resource('posts', 'PostController')
         ->only([
-            'index', 'show', 'store', 'update', 'destroy'
+            'store', 'update', 'destroy'
         ]);
 
 });
+
+// GET routes have to be non-authenticated or we would expose the api key to everyone
+Route::namespace('Api')->group(function () {
+
+    Route::get('categories',['uses'=>'CategoryController@index']);
+    Route::get('categories/{id}',['uses'=>'CategoryController@show']);
+
+    Route::get('posts',['uses'=>'PostController@index']);
+    Route::get('posts/{id}',['uses'=>'PostController@show']);
+
+});
+
 
 // request base path not found
 Route::fallback(function(){
     return response()->json(['message' => 'Invalid Path'], 404);
 });
-
-// non-authenticated routes
-// Route::get('/{any}', 'SpaController@index')->where('any', '.*');

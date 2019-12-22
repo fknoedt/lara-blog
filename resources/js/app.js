@@ -5,45 +5,42 @@
  */
 import 'bootstrap/dist/css/bootstrap.css';
 
-window.Vue = require('vue');
-
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import App from './views/App'
+import NotFound from './views/NotFound';
+import Blog from './views/Blog';
+import PostPage from './views/PostPage';
 
 Vue.use(VueRouter)
 
-import App from './views/App'
-import Hello from './views/Hello'
-import Home from './views/Home'
-import UsersIndex from './views/UsersIndex';
-import UsersEdit from './views/UsersEdit';
-import UsersCreate from './views/UsersCreate';
-import NotFound from './views/NotFound';
-
-// ...
-
+// SPA router
 const router = new VueRouter({
     mode: 'history',
     routes: [
         {
-            path: '/',
-            name: 'home',
-            component: Home
+            // main page
+            path: '/blog',
+            name: 'blog',
+            component: Blog,
         },
         {
-            path: '/users',
-            name: 'users.index',
-            component: UsersIndex,
+            // post page
+            path: '/blog/:id',
+            name: 'PostPage',
+            component: PostPage
         },
         {
-            path: '/users/:id/edit',
-            name: 'users.edit',
-            component: UsersEdit,
+            // main page
+            path: '/categories',
+            name: 'categories',
+            component: Blog,
         },
         {
-            path: '/users/create',
-            name: 'users.create',
-            component: UsersCreate,
+            // post page
+            path: '/categories/:id',
+            name: 'CategoryPage',
+            component: Blog
         },
         { path: '/404', name: '404', component: NotFound },
         { path: '*', redirect: '/404' },

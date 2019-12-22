@@ -8,7 +8,31 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class Post extends Model
 {
-    protected $fillable = ['id', 'title', 'description', 'long_description', 'image_url', 'user_id', 'category_id'];
+    protected $fillable = ['id', 'title', 'description', 'long_description', 'image_url', 'user_id', 'category_id', 'created_at', 'updated_at'];
+
+    /**
+     * Custom Attributes
+     * @var array
+     */
+    protected $appends = ['author', 'readable_created_date'];
+
+    /**
+     * Custom attribute (N x 1 with users)
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAuthorAttribute()
+    {
+        return $this->user()->pluck('name')->first();
+    }
+
+    /**
+     * Date parsed for human readbility
+     * @return false|string
+     */
+    public function getReadableCreatedDateAttribute()
+    {
+        return date("jS F, Y g:i A", strtotime($this->created_at));
+    }
 
     /**
      * Relationship: Many to One User

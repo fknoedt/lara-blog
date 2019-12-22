@@ -41,8 +41,17 @@ These are the paths where there are scripts I wrote or customized:
  * `/routes`
  * `/tests`
  * `/tests/Feature`
+ * `/resource/js`
+ * `/resource/js/components`
+ * `/resource/js/views`
+ * `/resource/views`
 
 ### TODO
+
+ * categories (filter by the route)
+ * categories link (1st one)
+ * /api/posts?c=category_id + order
+ * /admin: CRUD categories & posts
 
  * Implement a Vue / Bootstrap open (no authorization required) Front-End
  * Improve error handling
