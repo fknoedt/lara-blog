@@ -58,29 +58,27 @@ class PostController extends Controller
 
     /**
      * Save a Post to the database
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): JsonResponse
     {
         $input = $request->all();
 
-        // let's leverage Laravel's database validation
-        $validator = Validator::make($input, [
+        $this->validate($request, [
             'id'                => 'numeric|unique:posts,id',
             'title'             => 'required',
             'description'       => 'required',
             'long_description'  => 'required',
-            'image_url'         => 'required|url',
+            // 'image_url'         => 'required|url',
             'category_id'       => 'required|numeric|exists:categories,id'
         ]);
 
+        // logged user's ID
         $input['user_id'] = $request->user()->id;
-
-        // failure: 422 (unprocessable entry) response
-        if ($validator->fails()) {
-            abort(422, 'Invalid input: ' . $validator->errors());
-        }
+        // hard-coded image to avoid handling file upload for now
+        $input['image_url'] = 'https://picsum.photos/640/480?' . rand(1,10000);
 
         $post = $this->service->create($input);
 
@@ -93,6 +91,7 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
      * @return string
      */
     public function update(Request $request, $id): JsonResponse
@@ -101,22 +100,19 @@ class PostController extends Controller
 
         $input['id'] = $id;
 
-        // let's leverage Laravel's database validation
-        $validator = Validator::make($input, [
-            'id'                => 'numeric|required|exists:posts,id',
+        $this->validate($request, [
+            'id'                => 'numeric|unique:posts,id',
             'title'             => 'required',
             'description'       => 'required',
             'long_description'  => 'required',
-            'image_url'         => 'url',
+            // 'image_url'         => 'required|url',
             'category_id'       => 'required|numeric|exists:categories,id'
         ]);
 
         $input['user_id'] = $request->user()->id;
 
-        // failure: 422 (unprocessable entry) response
-        if ($validator->fails()) {
-            abort(422, 'Invalid input: ' . $validator->errors());
-        }
+        // hard-coded image to avoid handling file upload for now
+        $input['image_url'] = 'https://picsum.photos/640/480?' . rand(1,10000);
 
         $this->service->modify($input);
 

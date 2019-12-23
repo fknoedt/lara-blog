@@ -33,7 +33,10 @@ class CategoryController extends Controller
     {
         // retrieve all categories and return as JSON
         $categories = $this->service->list();
-        return response()->json($categories->toArray(), 200);
+        $categories = $categories->toArray();
+        // order indexes so it's properly handled in the front-end
+        ksort($categories);
+        return response()->json($categories, 200);
     }
 
     /**
@@ -58,14 +61,15 @@ class CategoryController extends Controller
     /**
      * Save a Category to the database
      * @param  \Illuminate\Http\Request  $request
+     * @throws \Illuminate\Validation\ValidationException
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
     {
         $input = $request->all();
 
-        // let's leverage Laravel's database validation
-        $validator = Validator::make($input, [
+        // let's leverage Laravel's validation
+        $this->validate($request, [
             'id'        => 'numeric|unique:categories,id',
             'name'      => 'required|unique:categories,name',
             'slug'      => 'required|unique:categories,slug',
@@ -74,11 +78,6 @@ class CategoryController extends Controller
 
         $input['user_id'] = $request->user()->id;
 
-        // failure: 422 (unprocessable entry) response
-        if ($validator->fails()) {
-            abort(422, 'Invalid input: ' . $validator->errors());
-        }
-
         $category = $this->service->create($input);
 
         return response()->json($category->toArray());
@@ -86,9 +85,9 @@ class CategoryController extends Controller
 
     /**
      * Update a Category in the database
-     *
      * @param  \Illuminate\Http\Request  $request
      * @param  int $id
+     * @throws \Illuminate\Validation\ValidationException
      * @return \Illuminate\Http\JsonResponse
      * @return string
      */
@@ -98,19 +97,13 @@ class CategoryController extends Controller
 
         $input['id'] = $id;
 
-        // let's leverage Laravel's database validation
-        $validator = Validator::make($input, [
-            'id'        => 'numeric|required|exists:categories',
+        // let's leverage Laravel's validation
+        $this->validate($request, [
             'name'      => 'required|unique:categories,name',
-            'slug'      => 'required|unique:categories,slug'
+            'slug'      => 'required|unique:categories,slug,' . $id
         ]);
 
         $input['user_id'] = $request->user()->id;
-
-        // failure: 422 (unprocessable entry) response
-        if ($validator->fails()) {
-            abort(422, 'Invalid input: ' . $validator->errors());
-        }
 
         $this->service->modify($input);
 

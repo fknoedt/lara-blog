@@ -34,7 +34,7 @@
 
           <hr>
 
-          <p>{{ fullPost.long_description}}</p>
+          <p v-html="fullPost.long_description"></p>
         </template>
 
 

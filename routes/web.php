@@ -12,7 +12,9 @@
 */
 
 
-Route::get('/', 'SPAController@index');
+Route::get('/', function () {
+    return redirect('blog');
+});
 
 // TODO: single definition
 Route::get('/blog', 'SPAController@index');
@@ -24,4 +26,13 @@ Route::get('/categories{any}', 'SPAController@index')->where('any', '.*');
 // routes required by Authentication operations
 Auth::routes();
 
+Route::middleware('auth')->group(
+    function () {
+        Route::get('admin', function () {
+            return redirect('admin/posts');
+        });
+        Route::get('admin/categories', 'AdminController@categories');
+        Route::get('admin/posts', 'AdminController@posts');
+    }
+);
 
