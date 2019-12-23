@@ -1,6 +1,6 @@
 ## Simple Blog Application 
 
-This project is a Blog - Posts and Categories served through a REST API - built with Laravel using the following features, methodologies and standards:
+This is a simple Blog implementation built with Laravel and MySQL in the Back End and Vue.js and Bootstrap 4 in the Front End using the following features, methodologies and standards:
  
  * [NestedSet](https://github.com/lazychaser/laravel-nestedset) Package (to implement a nested category structure)
  * MVC + Services
