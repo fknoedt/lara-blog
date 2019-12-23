@@ -17,11 +17,14 @@ This project is a Blog - Posts and Categories served through a REST API - built 
 ### Installation
 
 1) Clone this repository and run `composer install`
-2) Create your Database and set it's configuration on the .env file
-3) Copy or rename `/.env.example` to `/.env`
-4) Run `npm install`
-5) Run `npm run production`
-6) Setup a web server and visit `/blog` or `/admin` to it's respective interfaces   
+2) Copy or rename `/.env.example` to `/.env`
+3) Create your Database and set it's configuration on the .env file
+4) Run `php artisan migrate` to create the database structure and generate - through a seeder - the required data
+5) Run `php artisan db:seed --class=DummyPostsAndCategories` to populate the database with dummy data (for demo purposes)
+6) Run `npm install`
+7) Run `npm run production`
+8) Setup a web server and visit `/blog` or `/admin` to those respective interfaces   
+
 
 ### Testing
 
@@ -60,8 +63,8 @@ _* if not specified, every file in the directory was customized_
 
 ### TODO
 
- * implement Categories select =/
+ * implement Categories select =(
  * fix Admin panel style
- * CKEditor style
+ * Improve CKEditor style
  * Improve error handling
  * Use SQLite In Memory Database to improve the Test Cases' performance
