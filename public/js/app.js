@@ -1968,6 +1968,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1975,12 +1983,27 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       postsList: [],
-      categoriesList: []
+      categoriesList: [],
+      categoryName: ''
     };
   },
   created: function created() {
     this.fetchPosts();
     this.fetchCategories();
+  },
+  beforeRouteUpdate: function beforeRouteUpdate(to, from, next) {
+    next();
+    this.fetchPosts();
+  },
+  watch: {
+    '$route': function $route() {
+      // clear the category name when navigating out of a category
+      if (this.$router.currentRoute.name !== 'CategoryPage') {
+        this.categoryName = '';
+      }
+
+      this.fetchPosts();
+    }
   },
   components: {
     Post: _components_Post__WEBPACK_IMPORTED_MODULE_0__["default"]
@@ -1989,7 +2012,24 @@ __webpack_require__.r(__webpack_exports__);
     fetchPosts: function fetchPosts() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/posts').then(function (res) {
+      // console.log('Current Route Name: ', this.$router.currentRoute.name);
+      var categoryFilter = ''; // Category Page: retrieve category to display it's info & set the posts filter for that category
+
+      if (this.$router.currentRoute.name === 'CategoryPage') {
+        categoryFilter = "?c=".concat(this.$router.currentRoute.params.id);
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/api/categories/".concat(this.$router.currentRoute.params.id)).then(function (res) {
+          return _this.categoryName = res.data.parent_category ? "".concat(res.data.parent_category, " > ").concat(res.data.name) : res.data.name;
+        });
+      } else if (this.$router.currentRoute.name === 'categories') {
+        // default category page: retrieve the first category
+        categoryFilter = '?first=1'; // retrieve the first category
+
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/categories/0?first=1').then(function (res) {
+          return _this.categoryName = res.data.parent_category ? "".concat(res.data.parent_category, " > ").concat(res.data.name) : res.data.name;
+        });
+      }
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/api/posts".concat(categoryFilter)).then(function (res) {
         return _this.postsList = res.data;
       });
     },
@@ -2016,6 +2056,12 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3376,6 +3422,17 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
+    _vm.categoryName
+      ? _c("div", { staticClass: "row mb-3" }, [
+          _c("h5", [
+            _vm._v("Category "),
+            _c("span", { staticClass: "badge badge-secondary" }, [
+              _vm._v(_vm._s(_vm.categoryName))
+            ])
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c(
         "div",
@@ -3391,10 +3448,20 @@ var render = function() {
                     date: post.readable_created_date,
                     author: post.author,
                     img: post.image_url,
-                    "post-link": /blog/ + post.id
+                    "post-link": /post/ + post.id
                   }
                 })
               })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.postsList.length === 0
+            ? [
+                _c("div", { staticClass: "row" }, [
+                  _vm._v(
+                    "\n                  No Posts to Display\n              "
+                  )
+                ])
+              ]
             : _vm._e()
         ],
         2
@@ -3406,7 +3473,7 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-lg-6" }, [
+              _c("div", { staticClass: "col-lg" }, [
                 _c(
                   "ul",
                   { staticClass: "list-unstyled mb-0" },
@@ -3421,7 +3488,14 @@ var render = function() {
                               to: { path: "/categories/" + category.id }
                             }
                           },
-                          [_vm._v(_vm._s(category.name))]
+                          [
+                            category.parent_id
+                              ? _c("i", {
+                                  staticClass: "fas fa-caret-right mx-2"
+                                })
+                              : _vm._e(),
+                            _vm._v(_vm._s(category.name))
+                          ]
                         )
                       ],
                       1
@@ -3537,7 +3611,20 @@ var render = function() {
                 _vm._v(" "),
                 _c("hr"),
                 _vm._v(" "),
-                _c("p", [_vm._v(_vm._s(_vm.fullPost.description))]),
+                _c("p", [
+                  _vm._v(
+                    "\n            " +
+                      _vm._s(_vm.fullPost.description) +
+                      "\n        "
+                  )
+                ]),
+                _vm._v(" "),
+                _c("p", [
+                  _vm._v("\n            Posted under "),
+                  _c("span", { staticClass: "badge badge-secondary" }, [
+                    _vm._v(_vm._s(_vm.fullPost.category))
+                  ])
+                ]),
                 _vm._v(" "),
                 _c("img", {
                   staticClass: "img-fluid rounded",
@@ -18621,10 +18708,11 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     // main page
     path: '/blog',
     name: 'blog',
-    component: _views_Blog__WEBPACK_IMPORTED_MODULE_5__["default"]
+    component: _views_Blog__WEBPACK_IMPORTED_MODULE_5__["default"],
+    canReuse: false
   }, {
     // post page
-    path: '/blog/:id',
+    path: '/post/:id',
     name: 'PostPage',
     component: _views_PostPage__WEBPACK_IMPORTED_MODULE_6__["default"]
   }, {
@@ -19021,8 +19109,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/filipeknoedt/lara-blog/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/filipeknoedt/lara-blog/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\server\www\php\lara-blog\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\server\www\php\lara-blog\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

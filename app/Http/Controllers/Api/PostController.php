@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,13 +25,22 @@ class PostController extends Controller
     }
 
     /**
-     * List all posts
+     * List all posts [filtered by query string c=categoryId]
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        $categoryId = $request->get('c') ?? null;
+
+        if (! $categoryId && $request->get('first')) {
+            $category = Category::first();
+            if ($category) {
+                $categoryId = $category->id;
+            }
+        }
+
         // retrieve all posts and return as JSON
-        $posts = $this->service->list();
+        $posts = $this->service->list($categoryId);
         return response()->json($posts->toArray(), 200);
     }
 

@@ -23,10 +23,11 @@ const router = new VueRouter({
             path: '/blog',
             name: 'blog',
             component: Blog,
+            canReuse: false
         },
         {
             // post page
-            path: '/blog/:id',
+            path: '/post/:id',
             name: 'PostPage',
             component: PostPage
         },

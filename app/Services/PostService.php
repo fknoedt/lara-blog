@@ -22,11 +22,24 @@ class PostService
     }
 
     /**
-     * @return array
+     * Retrieve all Posts [filtered by category_id]
+     * @param null $categoryId
+     * @return Post[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function list()
+    public function list($categoryId=null)
     {
-        return Post::with('user')->get();
+        // TODO: allow filter by category is null (e.g. if we want parents only)
+        $posts = Post::with(['user']);
+
+        // if filtering by Posts from a specific Category, let's include Posts from a sub-Category of that Category
+        if ($categoryId) {
+            $posts->where(['category_id' => $categoryId])
+                ->orWhereHas('category', function($q) use ($categoryId) {
+                    $q->where(['parent_id' => $categoryId]);
+                });
+        }
+
+        return $posts->get();
     }
 
     /**

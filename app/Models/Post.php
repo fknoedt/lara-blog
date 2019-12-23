@@ -14,7 +14,7 @@ class Post extends Model
      * Custom Attributes
      * @var array
      */
-    protected $appends = ['author', 'readable_created_date'];
+    protected $appends = ['author', 'readable_created_date', 'category'];
 
     /**
      * Custom attribute (N x 1 with users)
@@ -23,6 +23,15 @@ class Post extends Model
     public function getAuthorAttribute()
     {
         return $this->user()->pluck('name')->first();
+    }
+
+    /**
+     * Custom attribute (N x 1 with category)
+     * @return \Illuminate\Support\Collection
+     */
+    public function getCategoryAttribute()
+    {
+        return $this->category()->pluck('name')->first();
     }
 
     /**

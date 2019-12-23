@@ -21,7 +21,7 @@ class CategoryService
      */
     public function list()
     {
-        return Category::all();
+        return Category::all()->sortBy('parent_id');
     }
 
     /**

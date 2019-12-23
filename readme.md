@@ -33,18 +33,20 @@ The `.env.testing` (see above) directive `DB_PERSIST_TEST_DATA` (0 or 1) allows 
 
 These are the paths where there are scripts I wrote or customized:
 
- * `/app/Http/Controller/Api`
+ * `/app/Http/Controller/Api` (CategoryController.php, PostController.php)
  * `/app/Models`
  * `/app/Services`
- * `/database/migrations`
- * `/database/seeds`
- * `/routes`
+ * `/database/migrations` (%category%, %post%)
+ * `/database/seeds` (InitialData.php, DummyPostsAndCategories.php)
+ * `/routes` (api.php, web.php)
  * `/tests`
  * `/tests/Feature`
- * `/resource/js`
+ * `/resource/js` (app.js)
  * `/resource/js/components`
  * `/resource/js/views`
  * `/resource/views`
+
+_* if not specified, every file in the directory was customized_
 
 ### TODO
 

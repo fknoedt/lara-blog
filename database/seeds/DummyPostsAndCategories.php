@@ -38,6 +38,9 @@ class DummyPostsAndCategories extends Seeder
      */
     public function run()
     {
+        // ensure ATOMicity
+        DB::beginTransaction();
+
         // use the factory to create a Faker\Generator instance
         $faker = Faker\Factory::create();
 
@@ -97,6 +100,7 @@ class DummyPostsAndCategories extends Seeder
 
         }
 
+        DB::commit();
     }
 
     /**

@@ -13,6 +13,9 @@ class InitialData extends Seeder
      */
     public function run()
     {
+        // ensure ATOMicity
+        DB::beginTransaction();
+
         // default user for testing (required for authentication and for the other records' FKs)
         DB::table('users')->insert(
             [
@@ -61,5 +64,7 @@ class InitialData extends Seeder
             'user_id'           => BaseTestCase::DEFAULT_USER_ID,
             'category_id'       => BaseTestCase::DEFAULT_CATEGORY_ID
         ]);
+
+        Db::commit();
     }
 }

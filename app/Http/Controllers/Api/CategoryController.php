@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,9 +26,10 @@ class CategoryController extends Controller
 
     /**
      * List all Categories
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         // retrieve all categories and return as JSON
         $categories = $this->service->list();
@@ -38,10 +40,17 @@ class CategoryController extends Controller
      * Return a Category for the given ID
      *
      * @param  int  $id
+     * @param Request $request
      * @return JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(Request $request, $id): JsonResponse
     {
+        // allow request to the first category
+        if ($id == 0 && $request->get('first')) {
+            $category = Category::first();
+            $id = $category->id;
+        }
+
         $category = $this->service->retrieve($id);
         return response()->json($category->toArray(), 200);
     }

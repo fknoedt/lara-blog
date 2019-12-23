@@ -21,7 +21,13 @@
 
           <hr>
 
-          <p>{{ fullPost.description }}</p>
+          <p>
+              {{ fullPost.description }}
+          </p>
+
+          <p>
+              Posted under <span class="badge badge-secondary">{{ fullPost.category }}</span>
+          </p>
 
           <!-- Preview Image -->
           <img class="img-fluid rounded" :src="fullPost.image_url" alt="">
